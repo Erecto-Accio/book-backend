@@ -1,19 +1,44 @@
 // Dependencies
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 
+// Schema
+const Book = require("../models/bookModel");
 //  Getting all the adventure books
 router.get("/", (req, res) => {
-  res.status(200).json({
-    message: "Giving all the adventure book",
-  });
+  Book.find()
+    .exec()
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      res.status(404).json(err);
+    });
 });
 
 // Posting all the adventure books
 router.post("/", (req, res) => {
-  res.status(202).json({
-    message: "Posting all the adventure book",
+  const book = new Book({
+    _id: new mongoose.Types.ObjectId(),
+    title: req.body.title,
+    author: req.body.author,
+    pageNumber: req.body.pageNumber,
+    review: req.body.review,
+    price: req.body.price,
+    category: req.body.category,
   });
+  book
+    .save()
+    .then((data) => {
+      res.status(200).json({
+        book: data,
+        message: "Book posted successfully",
+      });
+    })
+    .catch((err) => {
+      res.status(500).json(err);
+    });
 });
 
 // Getting a adventure book by id
