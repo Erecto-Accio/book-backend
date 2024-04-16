@@ -89,9 +89,18 @@ router.patch("/:bookId", (req, res) => {
 
 // Deleting a book with id
 router.delete("/:bookId", (req, res) => {
-  res.status(200).json({
-    message: "Deleted the book successfully",
-  });
+  const id = req.params.id;
+  Book.deleteOne(id)
+    .exec()
+    .then((data) => {
+      res.status(200).json({
+        message: "Deleted The data",
+        result: data,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json(err);
+    });
 });
 
 module.exports = router;
