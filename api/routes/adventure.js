@@ -56,9 +56,17 @@ router.get("/:bookId", (req, res) => {
 
 // Patching a book with id
 router.patch("/:bookId", (req, res) => {
-  res.status(200).json({
-    message: "Patched the book successfully",
-  });
+  const id = req.params.bookId;
+  const updatedBook = req.body;
+
+  Book.updateOne({ _id: id }, { $set: updatedBook })
+    .exec()
+    .then((data) => {
+      res.status(201).json(data);
+    })
+    .catch((err) => {
+      res.status(500).json(err);
+    });
 });
 
 // Deleting a book with id
