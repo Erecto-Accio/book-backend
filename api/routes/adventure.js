@@ -58,15 +58,33 @@ router.get("/:bookId", (req, res) => {
 router.patch("/:bookId", (req, res) => {
   const id = req.params.bookId;
   const updatedBook = req.body;
+  const allowedKeys = [
+    "title",
+    "author",
+    "pageNumber",
+    "review",
+    "price",
+    "category",
+  ];
 
-  Book.updateOne({ _id: id }, { $set: updatedBook })
-    .exec()
-    .then((data) => {
-      res.status(201).json(data);
-    })
-    .catch((err) => {
-      res.status(500).json(err);
+  const checkValid = Object.keys(updatedBook).every((update) =>
+    allowedKeys.includes(update)
+  );
+
+  if (!checkValid) {
+    res.status(400).json({
+      message: "Invalid updates",
     });
+  } else {
+    Book.updateOne({ _id: id }, { $set: updatedBook })
+      .exec()
+      .then((data) => {
+        res.status(201).json(data);
+      })
+      .catch((err) => {
+        res.status(500).json(err);
+      });
+  }
 });
 
 // Deleting a book with id
