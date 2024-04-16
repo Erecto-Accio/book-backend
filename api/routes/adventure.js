@@ -44,10 +44,14 @@ router.post("/", (req, res) => {
 // Getting a adventure book by id
 router.get("/:bookId", (req, res) => {
   const id = req.params.bookId;
-  res.status(200).json({
-    message: "A book with id",
-    bookId: id,
-  });
+  Book.findById(id)
+    .exec()
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      res.status(404).json(err);
+    });
 });
 
 // Patching a book with id
